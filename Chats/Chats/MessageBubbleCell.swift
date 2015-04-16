@@ -6,6 +6,8 @@ let bubbleTag = 8
 class MessageBubbleCell: UITableViewCell {
     let bubbleImageView: UIImageView
     let messageLabel: UILabel
+    let iconImageView: UIImageView
+    let nameLael: UILabel
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         bubbleImageView = UIImageView(image: bubbleImage.incoming, highlightedImage: bubbleImage.incomingHighlighed)
@@ -17,16 +19,45 @@ class MessageBubbleCell: UITableViewCell {
         messageLabel.numberOfLines = 0
         messageLabel.userInteractionEnabled = false   // #CopyMessage
 
+        iconImageView = UIImageView()
+        iconImageView.layer.cornerRadius = 33 / 2
+        iconImageView.layer.masksToBounds = true
+        
+        nameLael = UILabel()
+        nameLael.font = UIFont.systemFontOfSize(nameFontSize)
+        nameLael.numberOfLines = 1
+        nameLael.userInteractionEnabled = false   // #CopyMessage
+
+        
         super.init(style: .Default, reuseIdentifier: reuseIdentifier)
         selectionStyle = .None
 
+        contentView.addSubview(iconImageView)
         contentView.addSubview(bubbleImageView)
         bubbleImageView.addSubview(messageLabel)
-
+        contentView.addSubview(nameLael)
+        
+        iconImageView.setTranslatesAutoresizingMaskIntoConstraints(false)
         bubbleImageView.setTranslatesAutoresizingMaskIntoConstraints(false)
         messageLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
-        contentView.addConstraint(NSLayoutConstraint(item: bubbleImageView, attribute: .Left, relatedBy: .Equal, toItem: contentView, attribute: .Left, multiplier: 1, constant: 10))
-        contentView.addConstraint(NSLayoutConstraint(item: bubbleImageView, attribute: .Top, relatedBy: .Equal, toItem: contentView, attribute: .Top, multiplier: 1, constant: 4.5))
+        nameLael.setTranslatesAutoresizingMaskIntoConstraints(false)
+
+        // icon
+        contentView.addConstraint(NSLayoutConstraint(item: iconImageView, attribute: .Left, relatedBy: .Equal, toItem: contentView, attribute: .Left, multiplier: 1, constant: 4))
+        iconImageView.addConstraint(NSLayoutConstraint(item: iconImageView, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .Width, multiplier: 1, constant: 33))
+        iconImageView.addConstraint(NSLayoutConstraint(item: iconImageView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1, constant: 33))
+        
+        // name
+        contentView.addConstraint(NSLayoutConstraint(item: nameLael, attribute: .Left, relatedBy: .Equal, toItem: contentView, attribute: .Left, multiplier: 1, constant: 47))
+        nameLael.preferredMaxLayoutWidth = 218
+        nameLael.addConstraint(NSLayoutConstraint(item: nameLael, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1, constant: 12))
+        contentView.addConstraint(NSLayoutConstraint(item: nameLael, attribute: .Top, relatedBy: .Equal, toItem: contentView, attribute: .Top, multiplier: 1, constant: 0))
+
+        
+        // bubble
+        contentView.addConstraint(NSLayoutConstraint(item: bubbleImageView, attribute: .Left, relatedBy: .Equal, toItem: contentView, attribute: .Left, multiplier: 1, constant: 40))
+        contentView.addConstraint(NSLayoutConstraint(item: bubbleImageView, attribute: .Top, relatedBy: .Equal, toItem: contentView, attribute: .Top, multiplier: 1, constant: 16.5))
+
         bubbleImageView.addConstraint(NSLayoutConstraint(item: bubbleImageView, attribute: .Width, relatedBy: .Equal, toItem: messageLabel, attribute: .Width, multiplier: 1, constant: 30))
         contentView.addConstraint(NSLayoutConstraint(item: bubbleImageView, attribute: .Bottom, relatedBy: .Equal, toItem: contentView, attribute: .Bottom, multiplier: 1, constant: -4.5))
 
@@ -34,6 +65,8 @@ class MessageBubbleCell: UITableViewCell {
         bubbleImageView.addConstraint(NSLayoutConstraint(item: messageLabel, attribute: .CenterY, relatedBy: .Equal, toItem: bubbleImageView, attribute: .CenterY, multiplier: 1, constant: -0.5))
         messageLabel.preferredMaxLayoutWidth = 218
         bubbleImageView.addConstraint(NSLayoutConstraint(item: messageLabel, attribute: .Height, relatedBy: .Equal, toItem: bubbleImageView, attribute: .Height, multiplier: 1, constant: -15))
+
+        
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -61,16 +94,18 @@ class MessageBubbleCell: UITableViewCell {
                 messageLabel.textColor = UIColor.whiteColor()
                 layoutAttribute = .Right
                 layoutConstant = -10
+                iconImageView.hidden = true
+                nameLael.hidden = true
             }
 
-            let layoutConstraint: NSLayoutConstraint = bubbleImageView.constraints()[1] as NSLayoutConstraint // `messageLabel` CenterX
+            let layoutConstraint: NSLayoutConstraint = bubbleImageView.constraints()[1] as! NSLayoutConstraint // `messageLabel` CenterX
             layoutConstraint.constant = -layoutConstraint.constant
 
             let constraints: NSArray = contentView.constraints()
             let indexOfConstraint = constraints.indexOfObjectPassingTest { (var constraint, idx, stop) in
-                return (constraint.firstItem as UIView).tag == bubbleTag && (constraint.firstAttribute == NSLayoutAttribute.Left || constraint.firstAttribute == NSLayoutAttribute.Right)
+                return (constraint.firstItem as! UIView).tag == bubbleTag && (constraint.firstAttribute == NSLayoutAttribute.Left || constraint.firstAttribute == NSLayoutAttribute.Right)
             }
-            contentView.removeConstraint(constraints[indexOfConstraint] as NSLayoutConstraint)
+            contentView.removeConstraint(constraints[indexOfConstraint] as! NSLayoutConstraint)
             contentView.addConstraint(NSLayoutConstraint(item: bubbleImageView, attribute: layoutAttribute, relatedBy: .Equal, toItem: contentView, attribute: layoutAttribute, multiplier: 1, constant: layoutConstant))
         }
     }

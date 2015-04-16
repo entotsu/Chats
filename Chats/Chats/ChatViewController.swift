@@ -2,6 +2,7 @@ import AudioToolbox
 import UIKit
 
 let messageFontSize: CGFloat = 17
+let nameFontSize: CGFloat = 10
 let toolBarMinHeight: CGFloat = 44
 let textViewMaxHeight: (portrait: CGFloat, landscape: CGFloat) = (portrait: 272, landscape: 90)
 let messageSoundOutgoing: SystemSoundID = createMessageSoundOutgoing()
@@ -31,7 +32,7 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
             textView.textContainerInset = UIEdgeInsetsMake(4, 3, 3, 3)
             toolBar.addSubview(textView)
 
-            sendButton = UIButton.buttonWithType(.System) as UIButton
+            sendButton = UIButton.buttonWithType(.System) as! UIButton
             sendButton.enabled = false
             sendButton.titleLabel?.font = UIFont.boldSystemFontOfSize(17)
             sendButton.setTitle("Send", forState: .Normal)
@@ -161,7 +162,7 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
-            let cell = tableView.dequeueReusableCellWithIdentifier(NSStringFromClass(MessageSentDateCell), forIndexPath: indexPath) as MessageSentDateCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(NSStringFromClass(MessageSentDateCell), forIndexPath: indexPath) as! MessageSentDateCell
             let message = chat.loadedMessages[indexPath.section][0]
             dateFormatter.dateStyle = .ShortStyle
             dateFormatter.timeStyle = .ShortStyle
@@ -169,7 +170,7 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
             return cell
         } else {
             let cellIdentifier = NSStringFromClass(MessageBubbleCell)
-            var cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as MessageBubbleCell!
+            var cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as! MessageBubbleCell!
             if cell == nil {
                 cell = MessageBubbleCell(style: .Default, reuseIdentifier: cellIdentifier)
 
@@ -179,6 +180,8 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 doubleTapGestureRecognizer.numberOfTapsRequired = 2
                 cell.bubbleImageView.addGestureRecognizer(doubleTapGestureRecognizer)
                 cell.bubbleImageView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: action))
+                cell.iconImageView.image = UIImage(named: "User\(chat.user.ID)")
+                cell.nameLael.text = chat.user.name
             }
             let message = chat.loadedMessages[indexPath.section][indexPath.row-1]
             cell.configureWithMessage(message)
@@ -197,14 +200,14 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
 
     func keyboardWillShow(notification: NSNotification) {
-        let userInfo = notification.userInfo as NSDictionary!
-        let frameNew = (userInfo[UIKeyboardFrameEndUserInfoKey] as NSValue).CGRectValue()
+        let userInfo = notification.userInfo as! NSDictionary!
+        let frameNew = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
         let insetNewBottom = tableView.convertRect(frameNew, fromView: nil).height
         let insetOld = tableView.contentInset
         let insetChange = insetNewBottom - insetOld.bottom
         let overflow = tableView.contentSize.height - (tableView.frame.height-insetOld.top-insetOld.bottom)
 
-        let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as NSNumber).doubleValue
+        let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
         let animations: (() -> Void) = {
             if !(self.tableView.tracking || self.tableView.decelerating) {
                 // Move content with keyboard
@@ -219,7 +222,7 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
             }
         }
         if duration > 0 {
-            let options = UIViewAnimationOptions(UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as NSNumber).integerValue << 16)) // http://stackoverflow.com/a/18873820/242933
+            let options = UIViewAnimationOptions(UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16)) // http://stackoverflow.com/a/18873820/242933
             UIView.animateWithDuration(duration, delay: 0, options: options, animations: animations, completion: nil)
         } else {
             animations()
@@ -227,8 +230,8 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
 
     func keyboardDidShow(notification: NSNotification) {
-        let userInfo = notification.userInfo as NSDictionary!
-        let frameNew = (userInfo[UIKeyboardFrameEndUserInfoKey] as NSValue).CGRectValue()
+        let userInfo = notification.userInfo as! NSDictionary!
+        let frameNew = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
         let insetNewBottom = tableView.convertRect(frameNew, fromView: nil).height
 
         // Inset `tableView` with keyboard
@@ -312,7 +315,7 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if let selectedIndexPath = tableView.indexPathForSelectedRow() {
             tableView.deselectRowAtIndexPath(selectedIndexPath, animated: false)
         }
-        (notification.object as UIMenuController).menuItems = nil
+        (notification.object as! UIMenuController).menuItems = nil
     }
 }
 
@@ -326,7 +329,7 @@ func createMessageSoundOutgoing() -> SystemSoundID {
 // Only show "Copy" when editing `textView` #CopyMessage
 class InputTextView: UITextView {
     override func canPerformAction(action: Selector, withSender sender: AnyObject!) -> Bool {
-        if (delegate as ChatViewController).tableView.indexPathForSelectedRow() != nil {
+        if (delegate as! ChatViewController).tableView.indexPathForSelectedRow() != nil {
             return action == "messageCopyTextAction:"
         } else {
             return super.canPerformAction(action, withSender: sender)
@@ -335,6 +338,6 @@ class InputTextView: UITextView {
 
     // More specific than implementing `nextResponder` to return `delegate`, which might cause side effects?
     func messageCopyTextAction(menuController: UIMenuController) {
-        (delegate as ChatViewController).messageCopyTextAction(menuController)
+        (delegate as! ChatViewController).messageCopyTextAction(menuController)
     }
 }

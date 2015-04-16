@@ -1,14 +1,43 @@
 import UIKit
 
 class ChatsViewController: UITableViewController {
+
     var chats: [Chat] { return account.chats }
 
-    convenience override init() {
-        self.init(style: .Plain)
+    //    convenience override init() {
+    //        self.init(style: .Plain)
+    //        title = "Chats"
+    //        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "composeAction")
+    //    }
+
+    
+    func setup() {
         title = "Chats"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "composeAction")
     }
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        setup()
+    }
+    
+    override init!(nibName nibNameOrNil: String!, bundle nibBundleOrNil: NSBundle!) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+//        self.init(style: .Plain)
+        setup()
+    }
 
+    override init(style: UITableViewStyle) {
+        super.init(style: style)
+        setup()
+    }
+    
+    required init!(coder aDecoder: NSCoder!) {
+        super.init(coder: aDecoder)
+        setup()
+    }
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -50,7 +79,7 @@ class ChatsViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(NSStringFromClass(ChatCell), forIndexPath: indexPath) as ChatCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(NSStringFromClass(ChatCell), forIndexPath: indexPath) as! ChatCell
         cell.configureWithChat(account.chats[indexPath.row])
         return cell
     }

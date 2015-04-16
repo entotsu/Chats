@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B060241C1ADF7C93009B0399 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B060241B1ADF7C93009B0399 /* Main.storyboard */; };
 		D23EFE56197F053100C575C5 /* MessageSentDateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23EFE55197F053100C575C5 /* MessageSentDateCell.swift */; };
 		D277A9761A9277C800924B86 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D277A9751A9277C800924B86 /* LaunchScreen.storyboard */; };
 		D2C0D26F19A519CE00F4B4DD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DEC3BA195B34A20097CB9D /* User.swift */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B060241B1ADF7C93009B0399 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		D23EFE55197F053100C575C5 /* MessageSentDateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageSentDateCell.swift; sourceTree = "<group>"; };
 		D277A9751A9277C800924B86 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D29AEE8F1960C79700925449 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 		D2DEC39C195B33C20097CB9D /* Chats */ = {
 			isa = PBXGroup;
 			children = (
+				B060241B1ADF7C93009B0399 /* Main.storyboard */,
 				D2DEC39F195B33C20097CB9D /* AppDelegate.swift */,
 				D2DEC3C0195B34ED0097CB9D /* Chats */,
 				D2DEC3C1195B34F10097CB9D /* Chat */,
@@ -275,6 +278,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D2DEC3CE195B39290097CB9D /* MessageIncoming.aiff in Resources */,
+				B060241C1ADF7C93009B0399 /* Main.storyboard in Resources */,
 				D277A9761A9277C800924B86 /* LaunchScreen.storyboard in Resources */,
 				D2DEC3CF195B39290097CB9D /* MessageOutgoing.aiff in Resources */,
 				D2DEC3A2195B33C20097CB9D /* Images.xcassets in Resources */,

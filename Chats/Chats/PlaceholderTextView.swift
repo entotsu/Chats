@@ -35,7 +35,7 @@ class PlaceholderTextView: UITextView {
         if !hasText() {
             let rect = CGRect(x: 5, y: 8, width: self.frame.width-5*2, height: self.frame.height-5*2)
             let attributes = [NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor(white: 0.7, alpha: 1)]
-            (placeholder as NSString).drawInRect(rect, withAttributes:attributes)
+            (placeholder as! NSString).drawInRect(rect, withAttributes:attributes)
         }
     }
 }
