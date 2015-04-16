@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChatView: UIView, UITableViewDataSource, UITableViewDelegate, UITextViewDelegate {
+class ChatView: UIView {
     let chat: Chat
     var tableView: UITableView!
     var toolBar: UIToolbar!
@@ -59,7 +59,7 @@ class ChatView: UIView, UITableViewDataSource, UITableViewDelegate, UITextViewDe
     
     init(chat: Chat, frame: CGRect) {
         self.chat = chat
-//        super.init(nibName: nil, bundle: nil)
+        // super.init(nibName: nil, bundle: nil)
         super.init(frame: frame)
     }
     
@@ -70,29 +70,12 @@ class ChatView: UIView, UITableViewDataSource, UITableViewDelegate, UITextViewDe
     override func canBecomeFirstResponder() -> Bool {
         return true
     }
-    
-    // TODO: ATODE YOBU
+
     func superViewDidLoad() {
-//        super.viewDidLoad()
-//        
-//        chat.loadedMessages = [
-//            [
-//                Message(incoming: true, text: "I really enjoyed programming with you! :-)", sentDate: NSDate(timeIntervalSinceNow: -60*60*24*2-60*60)),
-//                Message(incoming: false, text: "Thanks! Me too! :-)", sentDate: NSDate(timeIntervalSinceNow: -60*60*24*2))
-//            ],
-//            [
-//                Message(incoming: true, text: "Hey, would you like to spend some time together tonight and work on Acani?", sentDate: NSDate(timeIntervalSinceNow: -33)),
-//                Message(incoming: false, text: "Sure, I'd love to. How's 6 PM?", sentDate: NSDate(timeIntervalSinceNow: -19)),
-//                Message(incoming: true, text: "6 sounds good :-)", sentDate: NSDate())
-//            ]
-//        ]
-        
-//        let whiteColor = UIColor.whiteColor()
-//        view.backgroundColor = whiteColor // smooths push animation
-        
+        // super.viewDidLoad()
         tableView = UITableView(frame: self.bounds, style: .Plain)
         tableView.autoresizingMask = .FlexibleWidth | .FlexibleHeight
-//        tableView.backgroundColor = whiteColor
+        // tableView.backgroundColor = whiteColor
         let edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: toolBarMinHeight, right: 0)
         tableView.contentInset = edgeInsets
         tableView.dataSource = self
@@ -109,7 +92,7 @@ class ChatView: UIView, UITableViewDataSource, UITableViewDelegate, UITextViewDe
         notificationCenter.addObserver(self, selector: "menuControllerWillHide:", name: UIMenuControllerWillHideMenuNotification, object: nil) // #CopyMessage
         
         // tableViewScrollToBottomAnimated(false) // doesn't work
-        self.becomeFirstResponder()
+        self.becomeFirstResponder()// show toolbar of text input
 
     }
     
@@ -118,22 +101,19 @@ class ChatView: UIView, UITableViewDataSource, UITableViewDelegate, UITextViewDe
     }
     
     
-    // TODO: ATODE YOBU
     func superViewDidAppear()  {
-//        super.viewDidAppear(animated)
+        // super.viewDidAppear(animated)
         tableView.flashScrollIndicators()
     }
 
-    // TODO: ATODE YOBU
     func superViewWillDisappear()  {
-//        super.viewWillDisappear(animated)
+        // super.viewWillDisappear(animated)
         chat.draft = textView.text
     }
     
-    // TODO: ATODE YOBU
     // This gets called a lot. Perhaps there's a better way to know when `view.window` has been set?
     func superViewDidLayoutSubviews()  {
-//        super.viewDidLayoutSubviews()
+        // super.viewDidLayoutSubviews()
         if !chat.draft.isEmpty {
             textView.text = chat.draft
             chat.draft = ""
@@ -141,13 +121,19 @@ class ChatView: UIView, UITableViewDataSource, UITableViewDelegate, UITextViewDe
             textView.becomeFirstResponder()
         }
     }
-    
-    
-    
-    
-    
-    
-    
+}
+
+
+
+
+
+
+
+
+
+
+extension ChatView : UITableViewDelegate, UITableViewDataSource {
+
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return chat.loadedMessages.count
     }
@@ -190,15 +176,29 @@ class ChatView: UIView, UITableViewDataSource, UITableViewDelegate, UITextViewDe
         return nil
     }
     
+    
+    func tableViewScrollToBottomAnimated(animated: Bool) {
+        let numberOfRows = tableView.numberOfRowsInSection(0)
+        if numberOfRows > 0 {
+            tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: numberOfRows-1, inSection: 0), atScrollPosition: .Bottom, animated: animated)
+        }
+    }
+    
+}
+
+
+
+
+
+
+
+
+extension ChatView: UITextViewDelegate {
+    
     func textViewDidChange(textView: UITextView) {
         updateTextViewHeight()
         sendButton.enabled = textView.hasText()
     }
-    
-    
-    
-    
-    
     
     func keyboardWillShow(notification: NSNotification) {
         let userInfo = notification.userInfo as NSDictionary!
@@ -247,7 +247,7 @@ class ChatView: UIView, UITableViewDataSource, UITableViewDelegate, UITextViewDe
     
     func updateTextViewHeight() {
         let oldHeight = textView.frame.height
-//        let maxHeight = UIInterfaceOrientationIsPortrait(interfaceOrientation) ? textViewMaxHeight.portrait : textViewMaxHeight.landscape
+        //        let maxHeight = UIInterfaceOrientationIsPortrait(interfaceOrientation) ? textViewMaxHeight.portrait : textViewMaxHeight.landscape
         let maxHeight = textViewMaxHeight.portrait
         var newHeight = min(textView.sizeThatFits(CGSize(width: textView.frame.width, height: CGFloat.max)).height, maxHeight)
         #if arch(x86_64) || arch(arm64)
@@ -279,17 +279,20 @@ class ChatView: UIView, UITableViewDataSource, UITableViewDelegate, UITextViewDe
             ], withRowAnimation: .Automatic)
         tableView.endUpdates()
         tableViewScrollToBottomAnimated(true)
-//        AudioServicesPlaySystemSound(messageSoundOutgoing)
+        //        AudioServicesPlaySystemSound(messageSoundOutgoing)
     }
-    
-    func tableViewScrollToBottomAnimated(animated: Bool) {
-        let numberOfRows = tableView.numberOfRowsInSection(0)
-        if numberOfRows > 0 {
-            tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: numberOfRows-1, inSection: 0), atScrollPosition: .Bottom, animated: animated)
-        }
-    }
-    
-    // Handle actions #CopyMessage
+}
+
+
+
+
+
+
+
+
+// Handle actions #CopyMessage
+
+extension ChatView {
     // 1. Select row and show "Copy" menu
     func messageShowMenuAction(gestureRecognizer: UITapGestureRecognizer) {
         let twoTaps = (gestureRecognizer.numberOfTapsRequired == 2)
@@ -324,6 +327,12 @@ class ChatView: UIView, UITableViewDataSource, UITableViewDelegate, UITextViewDe
 
 
 
+//func createMessageSoundOutgoing() -> SystemSoundID {
+//    var soundID: SystemSoundID = 0
+//    let soundURL = CFBundleCopyResourceURL(CFBundleGetMainBundle(), "MessageOutgoing", "aiff", nil)
+//    AudioServicesCreateSystemSoundID(soundURL, &soundID)
+//    return soundID
+//}
 
 
 
@@ -342,15 +351,4 @@ class InputTextView: UITextView {
         (delegate as! ChatView).messageCopyTextAction(menuController)
     }
 }
-
-
-
-
-//func createMessageSoundOutgoing() -> SystemSoundID {
-//    var soundID: SystemSoundID = 0
-//    let soundURL = CFBundleCopyResourceURL(CFBundleGetMainBundle(), "MessageOutgoing", "aiff", nil)
-//    AudioServicesCreateSystemSoundID(soundURL, &soundID)
-//    return soundID
-//}
-
 

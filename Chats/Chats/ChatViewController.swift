@@ -68,8 +68,7 @@ class ChatViewController: UIViewController {
     }
     
     
-    
-    //    // #iOS7.1
+// #iOS7.1
 //    override func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
 //        super.willAnimateRotationToInterfaceOrientation(toInterfaceOrientation, duration: duration)
 //        
